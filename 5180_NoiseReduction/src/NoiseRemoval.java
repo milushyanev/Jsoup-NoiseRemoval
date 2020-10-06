@@ -46,24 +46,27 @@ public class NoiseRemoval {
 	public static void main(String[] args) throws IOException {
 		//put the path of the file folder where the crawler downloads are located
 		String path="src/htmlDownloads/";
-		List<String> finalNoiceRemList = new ArrayList<String>();
+		List<String> finalNoiseRemList = new ArrayList<String>();
 		String saveRes = "afterNoiseRedResult";
 		File fileCount = new File(path);
 		for(int i=0;i<getFilesCount(fileCount);i++) {
 		File input = new File(path+getList(path).get(i));	
 		Document doc = Jsoup.parse(input, "UTF-8", "test");
 		String title = doc.title();
+		finalNoiseRemList.add("Title -> "+title);
 		//System.out.println(title);
-		Elements myEs = doc.body().select("body p, body h1, body h2, body h3, body h4, body h5, body h6");
+		//System.out.println(doc);
+		Elements myEs = doc.select("body p, body h1, body h2, body h3, body h4, body h5, body h6");
 		for (Element e: myEs) {
-			finalNoiceRemList.add(e.text());
+			//finalNoiseRemList.add(title);
+			finalNoiseRemList.add(e.text());
 			//println(e.text());
 			}
-			finalNoiceRemList.add("\nEnd - HTML "+(i+1)+"\n");
+			finalNoiseRemList.add("\nEnd - HTML "+(i+1)+"\n");
 			//println("\n");
 			
 		}
-		finalNoiseRemSave(saveRes,finalNoiceRemList);
-		//System.out.println(ls);	
+		finalNoiseRemSave(saveRes,finalNoiseRemList);
+		//System.out.println(finalNoiseRemList);	
 	}
 }
