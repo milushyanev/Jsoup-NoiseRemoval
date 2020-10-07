@@ -45,7 +45,6 @@ public class NoiseRemoval {
         }
         writer.close();
     }
-
 	public static void main(String[] args) throws IOException {
 		//put the path of the file folder where the crawler downloads are located
 		String path="src/htmlDownloads/";
@@ -53,23 +52,21 @@ public class NoiseRemoval {
 		String saveRes = "afterNoiseRedResult";
 		File fileCount = new File(path);
 		List<String> removeF= new LinkedList <String>();
-		List<String> removeAdd = new LinkedList <String>();
+		List<String> rmvAddFtr = new LinkedList <String>();
 		List<String> indexes= new LinkedList<String>();
 		//removeF.add("Avenue");
 		removeF.add("©");
 		removeF.add("All Rights Reserved");
 		removeF.add("Contact Us");
 		removeF.add("Copyright");
-		removeAdd.add("Avenue");
-		removeAdd.add("Blvd.");
-		removeAdd.add("Boulevard");
-		removeAdd.add("Street");
-		removeAdd.add("Ave.");
-		removeAdd.add("St.");
-		removeAdd.add("Circle");
-		removeAdd.add("Cir.");
-		int index=0;
-		int index1=0;
+		rmvAddFtr.add("Avenue");
+		rmvAddFtr.add("Blvd.");
+		rmvAddFtr.add("Boulevard");
+		rmvAddFtr.add("Street");
+		rmvAddFtr.add("Ave.");
+		rmvAddFtr.add("St.");
+		rmvAddFtr.add("Circle");
+		rmvAddFtr.add("Cir.");
 		for(int i=0;i<getFilesCount(fileCount);i++) {
 		File input = new File(path+getList(path).get(i));	
 		Document doc = Jsoup.parse(input, "UTF-8", "test");
@@ -78,10 +75,8 @@ public class NoiseRemoval {
 		Elements myEs = doc.select("p, h1,  h2, h3, h4, h5, h6, h1 class");
 		for (Element e: myEs) {
 			finalNoiseRemList.add(e.text());
-			index++;
 			}
-			finalNoiseRemList.add("\nEnd - HTML "+(i+1)+"----->"+index+"\n");
-			indexes.add(Integer.toString(index-2));
+			finalNoiseRemList.add("\nEnd - HTML "+(i+1)+"\n");
 		}
 		for(int i=0;i<finalNoiseRemList.size();i++) {
 			for(int j=0;j<removeF.size();j++) {
@@ -90,17 +85,18 @@ public class NoiseRemoval {
 				}
 			}
 		}
-		for (int i=0; i<indexes.size();i++) {
-			for(int j=0;j<removeAdd.size();j++) {
-				//**
-				if(finalNoiseRemList.get(Integer.parseInt(indexes.get(i))-index1).contains(removeAdd.get(j))==true){
-			
-					//**
-					finalNoiseRemList.remove(Integer.parseInt(indexes.get(i))-index1);
-					index1++;
+		for (int i=0; i<finalNoiseRemList.size();i++) {
+			if(finalNoiseRemList.get(i).contains("End - HTML")==true) {
+				indexes.add(Integer.toString(i));
+				}
+			for(int ind=0;ind<indexes.size();ind++) {
+				for(int j=0;j<rmvAddFtr.size();j++) {
+					if(finalNoiseRemList.get((Integer.parseInt(indexes.get(ind))-1)).contains(rmvAddFtr.get(j))==true){
+						finalNoiseRemList.remove((Integer.parseInt(indexes.get(ind))-1));
+						}
+					}
 				}
 			}
-		}
 		finalNoiseRemSave(saveRes,finalNoiseRemList);
 	}
 }
