@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -7,7 +8,9 @@ import org.jsoup.select.Elements;
 import java.io.*;
 
 public class NoiseRemoval {
-	
+	public static void println(Object line) {
+		System.out.println(line);
+	}
 	public static int getFilesCount(File file) {
 		  File[] files = file.listFiles();
 		  int count = 0;
@@ -49,24 +52,55 @@ public class NoiseRemoval {
 		List<String> finalNoiseRemList = new ArrayList<String>();
 		String saveRes = "afterNoiseRedResult";
 		File fileCount = new File(path);
+		List<String> removeF= new LinkedList <String>();
+		List<String> removeAdd = new LinkedList <String>();
+		List<String> indexes= new LinkedList<String>();
+		//removeF.add("Avenue");
+		removeF.add("©");
+		removeF.add("All Rights Reserved");
+		removeF.add("Contact Us");
+		removeF.add("Copyright");
+		removeAdd.add("Avenue");
+		removeAdd.add("Blvd.");
+		removeAdd.add("Boulevard");
+		removeAdd.add("Street");
+		removeAdd.add("Ave.");
+		removeAdd.add("St.");
+		removeAdd.add("Circle");
+		removeAdd.add("Cir.");
+		int index=0;
+		int index1=0;
 		for(int i=0;i<getFilesCount(fileCount);i++) {
 		File input = new File(path+getList(path).get(i));	
 		Document doc = Jsoup.parse(input, "UTF-8", "test");
 		String title = doc.title();
 		finalNoiseRemList.add("Title -> "+title);
-		//System.out.println(title);
-		//System.out.println(doc);
-		Elements myEs = doc.select("body p, body h1, body h2, body h3, body h4, body h5, body h6");
+		Elements myEs = doc.select("p, h1,  h2, h3, h4, h5, h6, h1 class");
 		for (Element e: myEs) {
-			//finalNoiseRemList.add(title);
 			finalNoiseRemList.add(e.text());
-			//println(e.text());
+			index++;
 			}
-			finalNoiseRemList.add("\nEnd - HTML "+(i+1)+"\n");
-			//println("\n");
+			finalNoiseRemList.add("\nEnd - HTML "+(i+1)+"----->"+index+"\n");
+			indexes.add(Integer.toString(index-2));
+		}
+		for(int i=0;i<finalNoiseRemList.size();i++) {
+			for(int j=0;j<removeF.size();j++) {
+			if(finalNoiseRemList.get(i).contains(removeF.get(j))==true ) {
+				finalNoiseRemList.remove(i);
+				}
+			}
+		}
+		for (int i=0; i<indexes.size();i++) {
+			for(int j=0;j<removeAdd.size();j++) {
+				//**
+				if(finalNoiseRemList.get(Integer.parseInt(indexes.get(i))-index1).contains(removeAdd.get(j))==true){
 			
+					//**
+					finalNoiseRemList.remove(Integer.parseInt(indexes.get(i))-index1);
+					index1++;
+				}
+			}
 		}
 		finalNoiseRemSave(saveRes,finalNoiseRemList);
-		//System.out.println(finalNoiseRemList);	
 	}
 }
