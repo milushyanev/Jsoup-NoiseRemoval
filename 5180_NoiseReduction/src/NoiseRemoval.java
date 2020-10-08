@@ -97,6 +97,9 @@ public class NoiseRemoval {
 					}
 				}
 			}
-		finalNoiseRemSave(saveRes,finalNoiseRemList);
+		finalNoiseRemSave(saveRes,finalNoiseRemList);	
+		for(int i=0;i<finalNoiseRemList.size();i++) {
+			println(finalNoiseRemList.get(i));
+		}
 	}
 }
